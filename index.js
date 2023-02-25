@@ -26,18 +26,18 @@ app.post("/api/signin", async (req,res)=>{
 
     await Usermodel.find({email:email}, (err,data)=>{
         
-        if (data.length==1) {
+        if (data.length>0) {
                 //Comparing given password & encrypted password in DB
                 const passwordValidator = bcrypt.compareSync(password,data[0].password)
                     if(passwordValidator){
                     
                     //Token Authentication-Generate-To be included in signin
                     // jwt.sign({"email":email, "id":data[0]._id},"signin-token",{expiresIn:"1d"}, (err,token)=>{
-                        if (err) {
-                            res.json({"status":"failed","data":"unauthorised user"})
-                        } else {
-                            res.json({"status":"success","data":data})
-                        }
+                        // if (err) {
+                        //     res.json({"status":"failed","data":"unauthorised user"})
+                        // } else {
+                        //     res.json({"status":"success","data":data})
+                        // }
                     // })
                 }
                 else{
