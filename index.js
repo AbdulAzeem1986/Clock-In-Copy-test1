@@ -24,7 +24,7 @@ app.post("/api/signin", async(req,res)=>{
     let email= req.body.email;
     let password = req.body.password;
 
-    let result = await Usermodel.find({email:email}, (err,data)=>{
+    await Usermodel.find({email:email}, (err,data)=>{
         
         if (data.length==1) {
                 //Comparing given password & encrypted password in DB
@@ -36,7 +36,7 @@ app.post("/api/signin", async(req,res)=>{
                         if (err) {
                             res.json({"status":"failed","data":"unauthorised user"})
                         } else {
-                            res.json({"status":"success","data":data,"token":token})
+                            res.json({"status":"success","data":data})
                         }
                     // })
                 }
