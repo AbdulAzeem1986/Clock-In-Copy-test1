@@ -19,7 +19,7 @@ Mongoose.connect("mongodb+srv://abdulazeem:abdulazeem86@cluster0.qch7vjx.mongodb
 
 
 //Api to Signin
-app.post("api/signin", async(req,res)=>{
+app.post("/api/signin", async(req,res)=>{
    
     let email= req.body.email;
     let password = req.body.password;
