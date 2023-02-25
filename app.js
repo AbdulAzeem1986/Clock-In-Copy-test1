@@ -233,6 +233,10 @@ app.get("/api/updateentries/:id", (req,res)=>{
   
 });
 
+app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname + '/build/index.html'));
+});
+
 
 app.listen(3003,(err)=>{
     if(err){
@@ -243,6 +247,3 @@ app.listen(3003,(err)=>{
     }
 })
 
-app.get('/*', function (req, res) {
-    res.sendFile(path.join(__dirname + '/build/index.html'));
-});
