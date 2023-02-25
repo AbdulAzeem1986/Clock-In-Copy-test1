@@ -24,7 +24,7 @@ app.post("/api/signin", async(req,res)=>{
     let email= req.body.email;
     let password = req.body.password;
 
-    let result =  Usermodel.find({email:email}, async(err,data)=>{
+    let result =  Usermodel.find({email:email}, (err,data)=>{
         
         if (data.length==1) {
                 //Comparing given password & encrypted password in DB
