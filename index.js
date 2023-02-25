@@ -24,7 +24,7 @@ app.post("/api/signin", async(req,res)=>{
     let email= req.body.email;
     let password = req.body.password;
 
-    let result =  Usermodel.find({email:email}, (err,data)=>{
+    let result = await Usermodel.find({email:email}, (err,data)=>{
         
         if (data.length==1) {
                 //Comparing given password & encrypted password in DB
@@ -32,13 +32,13 @@ app.post("/api/signin", async(req,res)=>{
                     if(passwordValidator){
                     
                     //Token Authentication-Generate-To be included in signin
-                    jwt.sign({"email":email, "id":data[0]._id},"signin-token",{expiresIn:"1d"}, (err,token)=>{
+                    // jwt.sign({"email":email, "id":data[0]._id},"signin-token",{expiresIn:"1d"}, (err,token)=>{
                         if (err) {
                             res.json({"status":"failed","data":"unauthorised user"})
                         } else {
                             res.json({"status":"success","data":data,"token":token})
                         }
-                    })
+                    // })
                 }
                 else{
                     res.json({"status":"failed","data":"invalid password"})
@@ -53,11 +53,11 @@ app.post("/api/signin", async(req,res)=>{
 
 
 //Api to add a user
-app.post("/api/adduser", (req, res) => {
+app.post("/api/adduser", async (req, res) => {
 
     
-    jwt.verify(req.body.token,"signin-token",(err,decoded)=>{
-        if(decoded && decoded.email){
+    // jwt.verify(req.body.token,"signin-token",(err,decoded)=>{
+    //     if(decoded && decoded.email){
        //  console.log("authorised")
 
             var data = {
@@ -66,7 +66,7 @@ app.post("/api/adduser", (req, res) => {
                 password: bcrypt.hashSync(req.body.password,10)
                 }
         
-            var user = new Usermodel(data);
+            var user = await new Usermodel(data);
             user.save((err, data) => {
                 if (err) {
                     res.json({ "Status": "Error", "Error": err })
@@ -77,11 +77,11 @@ app.post("/api/adduser", (req, res) => {
                     console.log(user);
                 }
         })
-    }
-        else{
-            res.json({"status":"unauthorised"})
-        }
-    })
+    // }
+    //     else{
+    //         res.json({"status":"unauthorised"})
+    //     }
+    // })
 });
 
 
