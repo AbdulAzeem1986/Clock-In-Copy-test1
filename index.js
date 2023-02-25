@@ -15,11 +15,11 @@ app.use(Bodyparser.json());
 app.use(Bodyparser.urlencoded({extended:true}));
 app.use(Cors());
 
-Mongoose.connect("mongodb+srv://username:password@cluster0.qch7vjx.mongodb.net/Clockin?retryWrites=true&w=majority",{useNewUrlParser:true});
+Mongoose.connect("mongodb+srv://abdulazeem:abdulazeem86@cluster0.qch7vjx.mongodb.net/Clockin?retryWrites=true&w=majority",{useNewUrlParser:true});
 
 
 //Api to Signin
-app.post("/api/signin", async(req,res)=>{
+app.post("api/signin", async(req,res)=>{
    
     let email= req.body.email;
     let password = req.body.password;
