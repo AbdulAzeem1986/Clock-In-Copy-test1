@@ -18,31 +18,28 @@ app.use(Cors());
 
 Mongoose.connect("mongodb+srv://abdulazeem:abdulazeem86@cluster0.qch7vjx.mongodb.net/Clockin?retryWrites=true&w=majority", { useNewUrlParser: true });
 
-
 //Api to Signin
 app.post("/api/signin", async (req, res) => {
 
     try {
         let email = req.body.email;
         let password = req.body.password;
-        console.log(req.body)
+        
         const result = await Usermodel.findOne({ email: email })
-        console.log(result)
-        console.log(result.password)
+        
         if (!result) throw ('username not found')
-
 
         //Comparing given password & encrypted password in DB
         const passwordValidator = bcrypt.compareSync(password, result.password)
 
-        console.log(passwordValidator)
         if (!passwordValidator) throw ({ "status": "failed", "data": "invalid password" })
 
         // Token Authentication-Generate-To be included in signin
        const token = jwt.sign({ "email": email, "id": result._id }, "signin-token", { expiresIn: "1d" })
        if(!token) throw ("Token not generated")
-      
-       res.send({ "status": "success", "data":token })
+      console.log(result)
+      console.log(token)
+       res.send({ "status": "success", "data":result, "token":token })
 
     }
      
@@ -50,55 +47,54 @@ app.post("/api/signin", async (req, res) => {
         console.log(error);
         res.send(error);
     }
-
-
-
-})
+});
 
 
 
 //Api to add a user
-app.post("/api/adduser", async (req, res) => {
+app.post("/api/adduser", (req, res) => {
 
+    
+    jwt.verify(req.body.token,"signin-token",(err,decoded)=>{
+        if(decoded && decoded.email){
+       //  console.log("authorised")
 
-    // jwt.verify(req.body.token,"signin-token",(err,decoded)=>{
-    //     if(decoded && decoded.email){
-    //  console.log("authorised")
-
-    var data = {
-        name: req.body.name,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, salt)
+            var data = {
+                name: req.body.name,
+                email: req.body.email,
+                password: bcrypt.hashSync(req.body.password,10)
+                }
+        
+            var user = new Usermodel(data);
+            user.save((err, data) => {
+                if (err) {
+                    res.json({ "Status": "Error", "Error": err })
+                  
+                } 
+                else {
+                    res.json({ "Status": "User added successfully", "Data": data })
+                    console.log(user);
+                }
+        })
     }
-
-    var user = await new Usermodel(data);
-    user.save((err, data) => {
-        if (err) {
-            res.json({ "Status": "Error", "Error": err })
-
-        }
-        else {
-            res.json({ "Status": "User added successfully", "Data": data })
-            console.log(user);
+        else{
+            res.json({"status":"unauthorised"})
         }
     })
-    // }
-    //     else{
-    //         res.json({"status":"unauthorised"})
-    //     }
-    // })
 });
 
 
 //Api to View users
-app.get("/api/viewusers", async (req, res) => {
+app.get("/api/viewusers", async(req,res)=>{
 
     try {
-        var result = await Usermodel.find();
-        res.send(result);
-    } catch (error) {
-        res.status(500).send(error);
-    }
+       var check = jwt.verify(req.body.token,"signin-token")
+       if(!check) throw ("Unauthorised")
+       var result = await Usermodel.find();
+       res.send(result);
+   } catch (error) {
+       res.status(500).send(error);
+   }
 
 });
 
