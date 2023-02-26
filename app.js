@@ -42,7 +42,7 @@ app.post("/api/signin", async (req, res) => {
        const token = jwt.sign({ "email": email, "id": result._id }, "signin-token", { expiresIn: "1d" })
        if(!token) throw ("Token not generated")
       
-       res.send({ "status": "success", "data": data, "token":token })
+       res.send({ "status": "success", "token":token })
 
     }
      
