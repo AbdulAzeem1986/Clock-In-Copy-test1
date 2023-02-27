@@ -89,12 +89,14 @@ app.get("/api/viewusers", async(req,res)=>{
 
     try {
        var decoded = jwt.verify(req.body.token, 'signin-token');
+       console.log(decoded)
        if(!decoded || !decoded.email) throw ("Unauthorised")
 
         var result = await Usermodel.find();
         res.send(result);
     } 
     catch (error) {
+        console.log(error)
         res.status(500).send(error);
     }
 
