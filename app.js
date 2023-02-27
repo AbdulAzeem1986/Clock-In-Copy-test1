@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const Usermodel = require("./models/Usermodel")
 const Entriesmodel = require("./models/Userentries");
 const path = require("path");
-
+// test
 
 const app = new Express;
 app.use(Express.static(path.join(__dirname, "/build")));
@@ -24,9 +24,9 @@ app.post("/api/signin", async (req, res) => {
     try {
         let email = req.body.email;
         let password = req.body.password;
-        
+
         const result = await Usermodel.findOne({ email: email })
-        
+
         if (!result) throw ('username not found')
 
         //Comparing given password & encrypted password in DB
@@ -35,14 +35,14 @@ app.post("/api/signin", async (req, res) => {
         if (!passwordValidator) throw ({ "status": "failed", "data": "invalid password" })
 
         // Token Authentication-Generate-To be included in signin
-       const token = jwt.sign({ "email": email, "id": result._id }, "signin-token", { expiresIn: "1d" })
-       if(!token) throw ("Token not generated")
-      console.log(result)
-      console.log(token)
-       res.send({ "status": "success", "data":result, "token":token })
+        const token = jwt.sign({ "email": email, "id": result._id }, "signin-token", { expiresIn: "1d" })
+        if (!token) throw ("Token not generated")
+        console.log(result)
+        console.log(token)
+        res.send({ "status": "success", "data": result, "token": token })
 
     }
-     
+
     catch (error) {
         console.log(error);
         res.send(error);
@@ -54,47 +54,49 @@ app.post("/api/signin", async (req, res) => {
 //Api to add a user
 app.post("/api/adduser", (req, res) => {
 
-    
-    jwt.verify(req.body.token,"signin-token",(err,decoded)=>{
-        if(decoded && decoded.email){
-       //  console.log("authorised")
+
+    jwt.verify(req.body.token, "signin-token", (err, decoded) => {
+        if (decoded && decoded.email) {
+            //  console.log("authorised")
 
             var data = {
                 name: req.body.name,
                 email: req.body.email,
-                password: bcrypt.hashSync(req.body.password,10)
-                }
-        
+                password: bcrypt.hashSync(req.body.password, 10)
+            }
+
             var user = new Usermodel(data);
             user.save((err, data) => {
                 if (err) {
                     res.json({ "Status": "Error", "Error": err })
-                  
-                } 
+
+                }
                 else {
                     res.json({ "Status": "User added successfully", "Data": data })
                     console.log(user);
                 }
-        })
-    }
-        else{
-            res.json({"status":"unauthorised"})
+            })
+        }
+        else {
+            res.json({ "status": "unauthorised" })
         }
     })
 });
 
 
 //Api to View users
-app.get("/api/viewusers", async(req,res)=>{
+app.get("/api/viewusers", async (req, res) => {
 
     try {
-       var check = jwt.verify(req.body.token,"signin-token")
-       if(!check) throw ("Unauthorised")
-       var result = await Usermodel.find();
-       res.send(result);
-   } catch (error) {
-       res.status(500).send(error);
-   }
+        var check = jwt.verify(req.body.token, "signin-token")
+        if (!check) throw ("Unauthorised")
+
+        var result = await Usermodel.find();
+        res.send(result);
+    }
+    catch (error) {
+        res.status(500).send(error);
+    }
 
 });
 
