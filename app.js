@@ -88,9 +88,13 @@ app.post("/api/adduser", (req, res) => {
 app.get("/api/viewusers", async(req,res)=>{
 
     try {
+       var decoded = jwt.verify(req.body.token, 'signin-token');
+       if(!decoded || !decoded.email) throw ("Unauthorised")
+
         var result = await Usermodel.find();
         res.send(result);
-    } catch (error) {
+    } 
+    catch (error) {
         res.status(500).send(error);
     }
 
