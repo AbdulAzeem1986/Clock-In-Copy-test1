@@ -85,22 +85,22 @@ app.post("/api/adduser", (req, res) => {
 
 
 //Api to View users
-app.get("/api/viewusers", async(req,res)=>{
+app.post("/viewusers", async (req, res) => {
 
     try {
-       var decoded = jwt.verify(req.body.token, 'signin-token');
-       console.log(decoded)
-       if(!decoded || !decoded.email) throw ("Unauthorised")
+        var decoded = jwt.verify(req.body.token, "signin-token")
+
+        if (!decoded || !decoded.email) throw ("unauthorised");
 
         var result = await Usermodel.find();
         res.send(result);
-    } 
-    catch (error) {
-        console.log(error)
-        res.status(500).send(error);
     }
 
-});
+    catch (error) {
+        res.json(error)
+        console.log(error)
+    }
+})
 
 
 //Delete user api
