@@ -18,7 +18,7 @@ app.use(Cors());
 
 Mongoose.connect("mongodb+srv://abdulazeem:abdulazeem86@cluster0.qch7vjx.mongodb.net/Clockin?retryWrites=true&w=majority", { useNewUrlParser: true });
 
-//Api to Signin
+//Api to Signin OK with jwt
 app.post("/api/signin", async (req, res) => {
 
     try {
@@ -54,7 +54,7 @@ app.post("/api/signin", async (req, res) => {
 
 
 
-//Api to add a user
+//Api to add a user Ok with jwt
 app.post("/api/adduser", (req, res) => {
 
 
@@ -87,8 +87,8 @@ app.post("/api/adduser", (req, res) => {
 });
 
 
-//Api to View users
-app.post("/viewusers", async (req, res) => {
+//Api to View users Not Ok with jwt
+app.post("/api/viewusers", async (req, res) => {
 
     try {
         var decoded = jwt.verify(req.body.token, "signin-token")
@@ -108,7 +108,7 @@ app.post("/viewusers", async (req, res) => {
 
 //Delete user api
 
-app.delete("/deleteuser/:id", async (req, res) => {
+app.delete("/api/deleteuser/:id", async (req, res) => {
     await Usermodel.deleteOne({ "_id": req.params.id })
         .then(
             (data) => {
