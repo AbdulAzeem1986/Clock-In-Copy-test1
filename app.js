@@ -87,7 +87,7 @@ app.post("/api/adduser", (req, res) => {
 });
 
 
-//Api to View users Not Ok with jwt
+//Api to View users Ok with jwt
 app.post("/api/viewusers", async (req, res) => {
 
     try {
@@ -208,7 +208,7 @@ app.delete("/api/deleteentry/:id", (req, res) => {
 
 
 //Retrieve data api
-app.get("/api/updateentries/:id", (req, res) => {
+app.post("/api/retrieveentries/:id", (req, res) => {
 
 
     Entriesmodel.findOne({ _id: req.params.id })
