@@ -24,30 +24,33 @@ app.post("/api/signin", async (req, res) => {
     try {
         let email = req.body.email;
         let password = req.body.password;
-
+        console.log(req.body)
         const result = await Usermodel.findOne({ email: email })
-
+        // console.log(result)
+        // console.log(result.password)
         if (!result) throw ('username not found')
+
 
         //Comparing given password & encrypted password in DB
         const passwordValidator = bcrypt.compareSync(password, result.password)
 
+        console.log(passwordValidator)
         if (!passwordValidator) throw ({ "status": "failed", "data": "invalid password" })
 
         // Token Authentication-Generate-To be included in signin
-        const token = jwt.sign({ "email": email, "id": result._id }, "signin-token", { expiresIn: "1d" })
-        if (!token) throw ("Token not generated")
-        console.log(result)
-        console.log(token)
-        res.send({ "status": "success", "data": result, "token": token })
+       const token = jwt.sign({ "email": email, "id": result._id }, "signin-token", { expiresIn: "1d" })
+       if(!token) throw ("Token not generated")
+       console.log(token)
+      console.log(result)
+       res.send({ "status": "success", "data":result, "token":token })
 
     }
-
+     
     catch (error) {
         console.log(error);
         res.send(error);
     }
-});
+})
 
 
 
